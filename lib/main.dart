@@ -1,6 +1,12 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_demo/pager/listview.dart';
+import 'package:flutter_demo/pager/gridview.dart';
+import 'package:flutter_demo/pager/CustomScrollView.dart';
+import 'package:flutter_demo/pager/ScrollListener.dart';
+import 'package:flutter_demo/pager/listviewloadmore.dart';
+import 'package:flutter_demo/pager/tablayout.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,13 +18,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '😁',
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.deepPurple,
+        backgroundColor: Colors.white,
       ),
       home: MyHomePage(title: '我是一个demo'),
       routes: {
         "new_page": (context) => NewRoute(),
         "widget_status": (context) => TapboxA(),
         "widget_status_b": (context) => ParentWidget(),
+        "tablayout": (context) => TabLayout(),
+        "listview": (context) => ListViewWidget(),
+        "gridview": (context) => GridViewWidget(),
+        "ScrollListenerWidget": (context) => ScrollListenerWidget(),
+        "CustomScrollViewWidget": (context) => CustomScrollViewWidget(),
+        "listviewloadmore": (context) => ListViewLoadMoreWidget(),
       },
     );
   }
@@ -119,8 +132,13 @@ class RandomWordsWight extends StatelessWidget {
   Widget build(BuildContext context) {
     final wordPair = WordPair.random();
     return Padding(
-      padding: const EdgeInsets.all(22.0),
-      child: Text("我是随机字符串----${wordPair.toString()}"),
+      padding: const EdgeInsets.all(14.0),
+      child: RaisedButton(
+        onPressed: () {},
+        child: Text(
+          "我是随机字符串----${wordPair.toString()}",
+        ),
+      ),
     );
   }
 }
@@ -155,7 +173,6 @@ class NewRoute extends StatelessWidget {
         title: Text("我是新页asd面"),
         centerTitle: true,
       ),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +197,10 @@ class NewRoute extends StatelessWidget {
               "https://avatars2.githubusercontent.com/u/20411648?s=460&v=4",
               width: 60.0,
             ),
-            Icon(Icons.access_time,color: Colors.deepPurpleAccent,)
+            Icon(
+              Icons.access_time,
+              color: Colors.deepPurpleAccent,
+            )
           ],
         ),
       ),
@@ -190,6 +210,7 @@ class NewRoute extends StatelessWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  int _selectIndex = 0;
 
   @override
   void initState() {
@@ -255,6 +276,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -269,76 +296,289 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         centerTitle: true,
-        backgroundColor: Colors.deepOrangeAccent,
+        leading: Builder(builder: (context) {
+          return IconButton(
+            icon: Icon(Icons.storage, color: Colors.white),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          );
+        }),
+        backgroundColor: Colors.deepPurple,
       ),
-      //      drawer: new Myd,
-      bottomNavigationBar: BottomNavigationBar( // 底部导航
+      drawer: new MyDrawer(),
+      bottomNavigationBar: BottomNavigationBar(
+        // 底部导航
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('Business')),
-          BottomNavigationBarItem(icon: Icon(Icons.school), title: Text('School')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.business), title: Text('Business')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.school), title: Text('School')),
         ],
-//        currentIndex: _selectedIndex,
-        fixedColor: Colors.blue,
-//        onTap: _onItemTapped,
+        currentIndex: _selectIndex,
+        fixedColor: Colors.deepPurpleAccent,
+        onTap: _onItemTapped,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have asdasdasd the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            FlatButton(
-              child: Text("widget的状态"),
-              textColor: Colors.black,
-              onPressed: () {
-                Navigator.pushNamed(context, "widget_status");
-              },
-            ),
-            FlatButton(
-              child: Text("父widget来管理子widget的状态"),
-              textColor: Colors.black,
-              onPressed: () {
-                Navigator.pushNamed(context, "widget_status_b");
-              },
-            ),
-            FlatButton(
-              child: Text("打开新的页面"),
-              textColor: Colors.black,
-              onPressed: () {
-                Navigator.pushNamed(context, "new_page", arguments: "我是一个参数");
-              },
-            ),
-            RandomWordsWight()
-          ],
+      body: Scrollbar(
+          child: SingleChildScrollView(
+        child: Center(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          child: Column(
+            // Column is also layout widget. It takes a list of children and
+            // arranges them vertically. By default, it sizes itself to fit its
+            // children horizontally, and tries to be as tall as its parent.
+            //
+            // Invoke "debug painting" (press "p" in the console, choose the
+            // "Toggle Debug Paint" action from the Flutter Inspector in Android
+            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+            // to see the wireframe for each widget.
+            //
+            // Column has various properties to control how it sizes itself and
+            // how it positions its children. Here we use mainAxisAlignment to
+            // center the children vertically; the main axis here is the vertical
+            // axis because Columns are vertical (the cross axis would be
+            // horizontal).
+//          mainAxisAlignment: MainAxisAlignment.center,
+
+            crossAxisAlignment: CrossAxisAlignment.center,
+
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    'You have asdasdasd the button this many times:',
+                  )),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.display1,
+              ),
+              RaisedButton(
+                child: Text("widget自身管理状态"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "widget_status");
+                },
+              ),
+              RaisedButton(
+                child: Text("父widget来管理子widget的状态"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "widget_status_b");
+                },
+              ),
+              RaisedButton(
+                child: Text("tablayout展示"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "tablayout");
+                },
+              ),
+              RaisedButton(
+                child: Text("使用路由地址打开新的页面"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "new_page", arguments: "我是一个参数");
+                },
+              ),
+              RandomWordsWight(),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("listview展示"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listview", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("listview分页加载更多"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("gridview展示"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "gridview", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("CustomScrollViewWidget展示"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "CustomScrollViewWidget", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("ScrollListenerWidget滑动监听"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "ScrollListenerWidget", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+              RaisedButton(
+                padding: const EdgeInsets.symmetric(horizontal: 100),
+                child: Text("😸"),
+                textColor: Colors.black,
+                onPressed: () {
+                  Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                },
+              ),
+            ],
+          ),
         ),
-      ),
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        tooltip: '点我',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class MyDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 240,
+      child: Drawer(
+          child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 12),
+                            child: ClipOval(
+                              child: Image.asset(
+                                "images/ic_launcher.png",
+                                width: 60,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "我是一个侧滑菜单",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                        child: ListView(
+                      children: <Widget>[
+                        ListTile(
+                          leading: const Icon(Icons.add),
+                          title: const Text("Add account"),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.settings),
+                          title: const Text("Manage account"),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.alarm_off),
+                          title: const Text("Add account"),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.ac_unit),
+                          title: const Text("Add account"),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.account_balance_wallet),
+                          title: const Text("Add account"),
+                        ),
+                      ],
+                    ))
+                  ],
+                ),
+              ))),
     );
   }
 }
