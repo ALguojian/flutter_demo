@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_demo/pager/EventBusPager.dart';
 class InheritedWidgetTestRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => InheritedWidgetTestRouteState();
@@ -24,7 +24,10 @@ class InheritedWidgetTestRouteState extends State<InheritedWidgetTestRoute> {
               ),
               RaisedButton(
                 child: Text("Increment"),
-                onPressed: () => setState(() => ++count),
+                onPressed: () => setState(() {
+                  ++count;
+                  bus.emit("click");
+                }),
               ),
             ],
           ),

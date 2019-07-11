@@ -18,10 +18,18 @@ class PointerEventPagerState extends State<PointerEventPager> {
         height: 400,
         child: Text(
           _pointerEvent?.toString() ?? "",
-          style: TextStyle( color: Colors.white,),
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.white,
+          ),
         ),
       ),
-
+      onPointerDown: (PointerDownEvent event) =>
+          setState(() => _pointerEvent = event),
+      onPointerMove: (PointerMoveEvent event) =>
+          setState(() => _pointerEvent = event),
+      onPointerUp: (PointerUpEvent event) =>
+          setState(() => _pointerEvent = event),
     );
   }
 }

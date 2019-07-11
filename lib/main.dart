@@ -1,14 +1,19 @@
 import 'package:english_words/english_words.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_demo/pager/listview.dart';
-import 'package:flutter_demo/pager/gridview.dart';
 import 'package:flutter_demo/pager/CustomScrollView.dart';
-import 'package:flutter_demo/pager/ScrollListener.dart';
+import 'package:flutter_demo/pager/EventBusPager.dart';
+import 'package:flutter_demo/pager/MyNotification.dart';
 import 'package:flutter_demo/pager/PointerEventPager.dart';
-import 'package:flutter_demo/pager/listviewloadmore.dart';
+import 'package:flutter_demo/pager/ScrollListener.dart';
 import 'package:flutter_demo/pager/ShareDataWidget.dart';
+import 'package:flutter_demo/pager/gridview.dart';
+import 'package:flutter_demo/pager/listview.dart';
+import 'package:flutter_demo/pager/listviewloadmore.dart';
 import 'package:flutter_demo/pager/tablayout.dart';
+import 'package:flutter_demo/pager/HeroRouter.dart';
+import 'package:flutter_demo/pager/StaggerDemo.dart';
 import 'package:toast/toast.dart';
 
 void main() => runApp(MyApp());
@@ -40,6 +45,10 @@ class MyApp extends StatelessWidget {
         "CustomScrollViewWidget": (context) => CustomScrollViewWidget(),
         "listviewloadmore": (context) => ListViewLoadMoreWidget(),
         "PointerEventPager": (context) => PointerEventPager(),
+        "EventBusPager": (context) => EventBusWidget(),
+        "MyNotification": (context) => NotificationRoute(),
+        "HeroRouter": (context) => HeroRouter(),
+        "StaggerDemo": (context) => StaggerDemo(),
       },
     );
   }
@@ -220,14 +229,16 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int _selectIndex = 0;
 
-
-  DateTime _lastClick;//上次点击的时间
+  DateTime _lastClick; //上次点击的时间
 
   @override
   void initState() {
     super.initState();
     //第一次插入到widget树时会被调用
     debugPrint(widget.title);
+    bus.on("click", (f) {
+      Toast.show("收到了其他页面的点击事件回调", context);
+    });
   }
 
   @override
@@ -301,38 +312,40 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return WillPopScope(child: Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-        centerTitle: true,
-        leading: Builder(builder: (context) {
-          return IconButton(
-            icon: Icon(Icons.storage, color: Colors.white),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          );
-        }),
-        backgroundColor: Colors.deepPurple,
-      ),
-      drawer: new MyDrawer(),
-      bottomNavigationBar: BottomNavigationBar(
-        // 底部导航
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.business), title: Text('Business')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.school), title: Text('School')),
-        ],
-        currentIndex: _selectIndex,
-        fixedColor: Colors.deepPurpleAccent,
-        onTap: _onItemTapped,
-      ),
-      body: Scrollbar(
-          child: SingleChildScrollView(
+    return WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: Text(widget.title),
+            centerTitle: true,
+            leading: Builder(builder: (context) {
+              return IconButton(
+                icon: Icon(Icons.storage, color: Colors.white),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            }),
+            backgroundColor: Colors.deepPurple,
+          ),
+          drawer: new MyDrawer(),
+          bottomNavigationBar: BottomNavigationBar(
+            // 底部导航
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home), title: Text('Home')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.business), title: Text('Business')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.school), title: Text('School')),
+            ],
+            currentIndex: _selectIndex,
+            fixedColor: Colors.deepPurpleAccent,
+            onTap: _onItemTapped,
+          ),
+          body: Scrollbar(
+              child: SingleChildScrollView(
             child: Center(
               // Center is a layout widget. It takes a single child and positions it
               // in the middle of the parent.
@@ -390,7 +403,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("使用路由地址打开新的页面"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "new_page", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "new_page",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RandomWordsWight(),
@@ -399,7 +413,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("listview展示"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listview", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listview",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -407,7 +422,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("listview分页加载更多"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -415,7 +431,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("gridview展示"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "gridview", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "gridview",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -423,7 +440,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("CustomScrollViewWidget展示"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "CustomScrollViewWidget", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "CustomScrollViewWidget",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -431,7 +449,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("ScrollListenerWidget滑动监听"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "ScrollListenerWidget", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "ScrollListenerWidget",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -439,7 +458,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("InheritedWidget数据传递管理"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "ShareDataWidget", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "ShareDataWidget",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -447,7 +467,58 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("PointerEvent触摸事件"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "PointerEventPager", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "PointerEventPager",
+                          arguments: "我是一个参数");
+                    },
+                  ),
+                  RaisedButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    child: Text("全局事件总线eventbus"),
+                    textColor: Colors.black,
+                    onPressed: () {
+//                      Navigator.pushNamed(context, "EventBusPager",
+//                          arguments: "我是一个参数");
+                      Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                              pageBuilder: (context, animation, animation2) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: EventBusWidget(),
+                                );
+                              },
+                              transitionDuration: Duration(milliseconds: 500)));
+                    },
+                  ),
+                  RaisedButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    child: Text("自定义通知"),
+                    textColor: Colors.black,
+                    onPressed: () {
+//                      Navigator.pushNamed(context, "MyNotification",
+//                          arguments: "我是一个参数");
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => NotificationRoute()));
+                    },
+                  ),
+                  RaisedButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    child: Text("Hero共享元素"),
+                    textColor: Colors.black,
+                    onPressed: () {
+                      Navigator.pushNamed(context, "HeroRouter",
+                          arguments: "我是一个参数");
+                    },
+                  ),
+                  RaisedButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    child: Text("多个动画执行"),
+                    textColor: Colors.black,
+                    onPressed: () {
+                      Navigator.pushNamed(context, "StaggerDemo",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -455,7 +526,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("😸"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -463,7 +535,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("😸"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -471,7 +544,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("😸"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -479,58 +553,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("😸"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
-                    },
-                  ),
-                  RaisedButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text("😸"),
-                    textColor: Colors.black,
-                    onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
-                    },
-                  ),
-                  RaisedButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text("😸"),
-                    textColor: Colors.black,
-                    onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
-                    },
-                  ),
-                  RaisedButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text("😸"),
-                    textColor: Colors.black,
-                    onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
-                    },
-                  ),
-                  RaisedButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text("😸"),
-                    textColor: Colors.black,
-                    onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                 ],
               ),
             ),
           )),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: '点我',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    ), onWillPop: () async{
-      if(_lastClick==null||DateTime.now().difference(_lastClick)>Duration(seconds: 1)){
-        _lastClick=DateTime.now();//如果点击间隔时间大于1秒，则重新计算
-        Toast.show("再按一次就退出了😯", context,duration: Toast.LENGTH_LONG,textColor: Colors.white,backgroundColor: Colors.deepPurple);
-        return false;
-      }
-      return true;
-    });
+          floatingActionButton: FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: '点我',
+            child: Icon(Icons.add),
+          ), // This trailing comma makes auto-formatting nicer for build methods.
+        ),
+        onWillPop: () async {
+          if (_lastClick == null ||
+              DateTime.now().difference(_lastClick) > Duration(seconds: 1)) {
+            _lastClick = DateTime.now(); //如果点击间隔时间大于1秒，则重新计算
+            Toast.show("再按一次就退出了😯", context,
+                duration: Toast.LENGTH_LONG,
+                textColor: Colors.white,
+                backgroundColor: Colors.deepPurple);
+            return false;
+          }
+          return true;
+        });
   }
 }
 
