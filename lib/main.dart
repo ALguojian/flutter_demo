@@ -14,6 +14,7 @@ import 'package:flutter_demo/pager/listviewloadmore.dart';
 import 'package:flutter_demo/pager/tablayout.dart';
 import 'package:flutter_demo/pager/HeroRouter.dart';
 import 'package:flutter_demo/pager/StaggerDemo.dart';
+import 'package:flutter_demo/pager/CustomerUI.dart';
 import 'package:toast/toast.dart';
 
 void main() => runApp(MyApp());
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         "MyNotification": (context) => NotificationRoute(),
         "HeroRouter": (context) => HeroRouter(),
         "StaggerDemo": (context) => StaggerDemo(),
+        "CustomerUI": (context) => CustomerUIRoute(),
       },
     );
   }
@@ -523,10 +525,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   RaisedButton(
                     padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text("😸"),
+                    child: Text("自定义UI"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore",
+                      Navigator.pushNamed(context, "CustomerUI",
                           arguments: "我是一个参数");
                     },
                   ),
