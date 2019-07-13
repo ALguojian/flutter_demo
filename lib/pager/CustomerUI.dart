@@ -16,6 +16,8 @@ class CustomerUIRouteState extends State<CustomerUIRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      
       appBar: AppBar(
         title: Text("自定义UI"),
       ),
@@ -247,6 +249,7 @@ class MyPainter extends CustomPainter {
       double dx = eWidth * i;
       canvas.drawLine(Offset(dx, 0), Offset(dx, size.height), paint);
     }
+
 
     paint
       ..style = PaintingStyle.fill
@@ -595,3 +598,5 @@ class GradientCircularProgressRouteState
     );
   }
 }
+
+

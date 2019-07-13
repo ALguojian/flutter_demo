@@ -394,9 +394,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text(
                         '点击次数已经缓存到本地文件中，下次进度会直接读取',
                       )),
-                  Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.display1,
+                  Center(
+                    child: Text(
+                      '$_counter',
+                      style: Theme.of(context).textTheme.display1,
+                    ),
                   ),
                   RaisedButton(
                     child: Text("widget自身管理状态"),
@@ -446,7 +448,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   RaisedButton(
                     padding: const EdgeInsets.symmetric(horizontal: 100),
                     child: Text("gridview展示"),
-                    textColor: Colors.black,
+                    textColor: Colors.blue[100],
                     onPressed: () {
                       Navigator.pushNamed(context, "gridview", arguments: "我是一个参数");
                     },

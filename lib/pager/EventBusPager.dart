@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 class EventBusWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      color: Colors.blue,
-      alignment: Alignment.center,
-      child: RaisedButton(
-        onPressed: () {
-          bus.emit("click");
-        },
-        child: Text("点击发送一个事件到首页"),
+    return Material(
+      child: new Container(
+        color: Colors.blue,
+        alignment: Alignment.center,
+        child: RaisedButton(
+          onPressed: () {
+            bus.emit("click");
+          },
+          child: Text("点击发送一个事件到首页"),
+        ),
       ),
     );
   }
