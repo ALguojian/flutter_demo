@@ -19,10 +19,22 @@ import 'package:flutter_demo/pager/listview.dart';
 import 'package:flutter_demo/pager/listviewloadmore.dart';
 import 'package:flutter_demo/pager/tablayout.dart';
 import 'package:flutter_demo/pager/DiaRouter.dart';
+import 'package:flutter_demo/provider/CounterModel.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  final counter = CounterModel();
+  final testSize = 50;
+  runApp(Provider<int>.value(
+    value: testSize,
+    child: ChangeNotifierProvider.value(
+      value: counter,
+      child: MyApp(),
+    ),
+  ));
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -90,7 +102,8 @@ class _TapboxAState extends State<TapboxA> {
         ),
         width: 200.0,
         height: 200.0,
-        decoration: new BoxDecoration(color: _active ? Colors.lightGreen[700] : Colors.grey[500]),
+        decoration: new BoxDecoration(
+            color: _active ? Colors.lightGreen[700] : Colors.grey[500]),
       ),
     );
   }
@@ -121,7 +134,8 @@ class _ParentWidgetState extends State<ParentWidget> {
 }
 
 class TaspboxB extends StatelessWidget {
-  TaspboxB({Key key, this.active: false, @required this.onChange}) : super(key: key);
+  TaspboxB({Key key, this.active: false, @required this.onChange})
+      : super(key: key);
 
   final bool active;
   final ValueChanged<bool> onChange;
@@ -143,7 +157,8 @@ class TaspboxB extends StatelessWidget {
         ),
         width: 200.0,
         height: 200.0,
-        decoration: new BoxDecoration(color: active ? Colors.red[200] : Colors.blue[500]),
+        decoration: new BoxDecoration(
+            color: active ? Colors.red[200] : Colors.blue[500]),
       ),
     );
   }
@@ -211,7 +226,8 @@ class NewRoute extends StatelessWidget {
               width: 80,
             ),
             Image(
-              image: NetworkImage("https://avatars2.githubusercontent.com/u/20411648?s=460&v=4"),
+              image: NetworkImage(
+                  "https://avatars2.githubusercontent.com/u/20411648?s=460&v=4"),
               width: 80.0,
             ),
             Image.network(
@@ -356,9 +372,12 @@ class _MyHomePageState extends State<MyHomePage> {
           bottomNavigationBar: BottomNavigationBar(
             // 底部导航
             items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-              BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('Business')),
-              BottomNavigationBarItem(icon: Icon(Icons.school), title: Text('School')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home), title: Text('Home')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.business), title: Text('Business')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.school), title: Text('School')),
             ],
             currentIndex: _selectIndex,
             fixedColor: Colors.deepPurpleAccent,
@@ -425,7 +444,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("使用路由地址打开新的页面"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "new_page", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "new_page",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RandomWordsWight(),
@@ -434,7 +454,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("listview展示"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listview", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listview",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -442,7 +463,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("listview分页加载更多"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -450,7 +472,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("gridview展示"),
                     textColor: Colors.blue[100],
                     onPressed: () {
-                      Navigator.pushNamed(context, "gridview", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "gridview",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -458,7 +481,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("CustomScrollViewWidget展示"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "CustomScrollViewWidget", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "CustomScrollViewWidget",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -466,7 +490,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("ScrollListenerWidget滑动监听"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "ScrollListenerWidget", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "ScrollListenerWidget",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -474,7 +499,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("InheritedWidget数据传递管理"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "ShareDataWidget", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "ShareDataWidget",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -482,7 +508,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("PointerEvent触摸事件"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "PointerEventPager", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "PointerEventPager",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -511,7 +538,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
 //                      Navigator.pushNamed(context, "MyNotification",
 //                          arguments: "我是一个参数");
-                      Navigator.push(context, CupertinoPageRoute(builder: (context) => NotificationRoute()));
+                      Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                              builder: (context) => NotificationRoute()));
                     },
                   ),
                   RaisedButton(
@@ -519,7 +549,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("Hero共享元素"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "HeroRouter", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "HeroRouter",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -527,7 +558,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("多个动画执行"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "StaggerDemo", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "StaggerDemo",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -535,7 +567,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("自定义UI"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "CustomerUI", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "CustomerUI",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -543,7 +576,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("dia网络库使用"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "DiaRouter", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "DiaRouter",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -551,7 +585,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("😸"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                   RaisedButton(
@@ -559,7 +594,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("😸"),
                     textColor: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, "listviewloadmore", arguments: "我是一个参数");
+                      Navigator.pushNamed(context, "listviewloadmore",
+                          arguments: "我是一个参数");
                     },
                   ),
                 ],
@@ -573,10 +609,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ), // This trailing comma makes auto-formatting nicer for build methods.
         ),
         onWillPop: () async {
-          if (_lastClick == null || DateTime.now().difference(_lastClick) > Duration(seconds: 1)) {
+          if (_lastClick == null ||
+              DateTime.now().difference(_lastClick) > Duration(seconds: 1)) {
             _lastClick = DateTime.now(); //如果点击间隔时间大于1秒，则重新计算
             Toast.show("再按一次就退出了😯", context,
-                duration: Toast.LENGTH_LONG, textColor: Colors.white, backgroundColor: Colors.deepPurple);
+                duration: Toast.LENGTH_LONG,
+                textColor: Colors.white,
+                backgroundColor: Colors.deepPurple);
             return false;
           }
           return true;
@@ -603,7 +642,8 @@ class MyDrawer extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 12),
                             child: ClipOval(
                               child: Image.asset(
                                 "images/ic_launcher.png",
